@@ -32,23 +32,8 @@ services:
           name: aitrip-ai-service
           property: host
 
-  # 3. React Vite Frontend
-  - type: web
-    name: aitrip-frontend
-    env: static
-    region: singapore
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: aitrip-backend
-          property: url
-
 databases:
   # Managed PostgreSQL Database
   - name: aitrip-db
     region: singapore
     databaseName: ai_trip_planner
-    user: postgres
