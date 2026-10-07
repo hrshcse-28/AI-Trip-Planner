@@ -3,17 +3,36 @@
 This is the repository for the AI Trip Planner application.
 
 ## Folder Structure
-- `frontend/`: The frontend application (Vite + TypeScript)
-- `backend/`: The backend application (FastAPI)
+- `frontend/`: The frontend application (React 19 + Vite + TypeScript + TailwindCSS)
+- `backend/`: The backend REST API (Node.js + Express + Prisma + SQLite/PostgreSQL)
+- `ai-service/`: The AI itinerary & concierge service (Python + FastAPI + Google Gemini)
 
 ## Getting Started
 
-### Backend
-1. cd backend
-2. pip install -r requirements.txt
-3. uvicorn main:app --reload
+### 1. Backend (Node.js API)
+```bash
+cd backend
+npm install
+npx prisma db push
+npm run dev
+```
 
-### Frontend
-1. cd frontend
-2. npm install
-3. npm run dev
+### 2. AI Service (Python FastAPI)
+```bash
+cd ai-service
+pip install -r requirements.txt
+python main.py
+```
+
+### 3. Frontend (React App)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Or using Docker Compose
+```bash
+docker-compose up --build
+```
+
