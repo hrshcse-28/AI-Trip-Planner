@@ -246,12 +246,18 @@ async def generate_itinerary(request: GenerateRequest) -> ItineraryResponse:
 
     try:
         genai.configure(api_key=api_key)
-        # Try gemini-2.0-flash, or gemini-1.5-flash
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        prompt = build_prompt(request)
-
-        response = model.generate_content(prompt)
-        raw_text = response.text.strip()
+        # Use standard gemini-1.5-flash model
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            prompt = build_prompt(request)
+            response = model.generate_content(prompt)
+            raw_text = response.text.strip()
+        except Exception as e1:
+            logger.warning(f"Primary model failed ({e1}), trying gemini-2.0-flash...")
+            model = genai.GenerativeModel("gemini-2.0-flash")
+            prompt = build_prompt(request)
+            response = model.generate_content(prompt)
+            raw_text = response.text.strip()
 
         # Clean code fences
         if raw_text.startswith("```"):

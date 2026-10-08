@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from schemas import GenerateRequest, ItineraryResponse, ChatRequest, ChatResponse
-from llm_service import generate_itinerary, chat_with_concierge
+from llm_service import generate_itinerary, chat_with_concierge, generate_fallback_itinerary, generate_fallback_chat
 
 app = FastAPI(title="AI Trip Planner API")
 
@@ -28,11 +28,9 @@ async def generate_itinerary_endpoint(request: GenerateRequest):
     try:
         result = await generate_itinerary(request)
         return result
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        print(f"Error generating itinerary: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate itinerary: {str(e)}")
+        print(f"Error generating itinerary: {e}, returning fallback")
+        return generate_fallback_itinerary(request)
 
 
 @app.post("/chat", response_model=ChatResponse)
