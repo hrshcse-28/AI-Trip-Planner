@@ -748,31 +748,53 @@ export default function TripDetails() {
       {/* VIEW 3: FULL MAP */}
       {viewMode === 'map' && (
         <div className="space-y-4">
-          {/* Day selection tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <button
-              onClick={() => setSelectedDayNumber('all')}
-              className={`px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                selectedDayNumber === 'all'
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              All Days ({trip.days.length})
-            </button>
-            {trip.days.map((day) => (
+          {/* Day selection tabs & dropdown */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
               <button
-                key={day.dayNumber}
-                onClick={() => setSelectedDayNumber(day.dayNumber)}
+                onClick={() => setSelectedDayNumber('all')}
                 className={`px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedDayNumber === day.dayNumber
+                  selectedDayNumber === 'all'
                     ? 'bg-primary text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                Day {day.dayNumber}
+                All Days ({trip.days.length})
               </button>
-            ))}
+              {trip.days.map((day) => (
+                <button
+                  key={day.dayNumber}
+                  onClick={() => setSelectedDayNumber(day.dayNumber)}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                    selectedDayNumber === day.dayNumber
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Day {day.dayNumber}
+                </button>
+              ))}
+            </div>
+
+            {/* Calendar Day Dropdown */}
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+              <select
+                value={selectedDayNumber === 'all' ? 'all' : String(selectedDayNumber)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedDayNumber(val === 'all' ? 'all' : parseInt(val, 10));
+                }}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-primary focus:outline-none cursor-pointer shadow-xs"
+              >
+                <option value="all">📅 View All Days ({trip.days.length} Days)</option>
+                {trip.days.map((day) => (
+                  <option key={day.dayNumber} value={day.dayNumber}>
+                    Day {day.dayNumber}: {day.summary || `Day ${day.dayNumber} Schedule`}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="h-[600px] w-full">
@@ -790,30 +812,52 @@ export default function TripDetails() {
       {viewMode === 'split' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="space-y-6">
-            <div className="flex items-center gap-2 overflow-x-auto pb-2">
-              <button
-                onClick={() => setSelectedDayNumber('all')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedDayNumber === 'all'
-                    ? 'bg-primary text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                All Days
-              </button>
-              {trip.days.map((day) => (
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-2">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
                 <button
-                  key={day.dayNumber}
-                  onClick={() => setSelectedDayNumber(day.dayNumber)}
+                  onClick={() => setSelectedDayNumber('all')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                    selectedDayNumber === day.dayNumber
+                    selectedDayNumber === 'all'
                       ? 'bg-primary text-white shadow-sm'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
-                  Day {day.dayNumber}
+                  All Days
                 </button>
-              ))}
+                {trip.days.map((day) => (
+                  <button
+                    key={day.dayNumber}
+                    onClick={() => setSelectedDayNumber(day.dayNumber)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                      selectedDayNumber === day.dayNumber
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    Day {day.dayNumber}
+                  </button>
+                ))}
+              </div>
+
+              {/* Day Selector Dropdown */}
+              <div className="flex items-center gap-2 shrink-0">
+                <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                <select
+                  value={selectedDayNumber === 'all' ? 'all' : String(selectedDayNumber)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedDayNumber(val === 'all' ? 'all' : parseInt(val, 10));
+                  }}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-primary focus:outline-none cursor-pointer shadow-xs"
+                >
+                  <option value="all">📅 All Days ({trip.days.length} Days)</option>
+                  {trip.days.map((day) => (
+                    <option key={day.dayNumber} value={day.dayNumber}>
+                      Day {day.dayNumber}: {day.summary || `Day ${day.dayNumber} Schedule`}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="space-y-8 max-h-[680px] overflow-y-auto pr-2">
