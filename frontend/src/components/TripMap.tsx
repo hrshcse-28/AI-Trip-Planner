@@ -98,6 +98,7 @@ export function TripMap({
       scrollWheelZoom: false,
     });
 
+    // OpenStreetMap standard tile layer (free, no API key required)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution:
