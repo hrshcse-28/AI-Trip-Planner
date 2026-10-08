@@ -346,17 +346,62 @@ export default function CreateTrip() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="startDate" className="text-sm font-semibold flex items-center gap-1.5">
-                  <CalendarIcon className="h-4 w-4 text-primary" /> Start Date (Optional)
-                </Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  disabled={isGenerating}
-                  className="h-11 rounded-xl"
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="startDate" className="text-sm font-semibold flex items-center gap-1.5">
+                    <CalendarIcon className="h-4 w-4 text-primary" /> Start Date (Optional)
+                  </Label>
+
+                  {/* Quick Date Presets Dropdown */}
+                  <select
+                    onChange={(e) => {
+                      const choice = e.target.value;
+                      if (!choice) return;
+                      const today = new Date();
+                      let targetDate = new Date();
+
+                      if (choice === 'today') {
+                        targetDate = today;
+                      } else if (choice === 'tomorrow') {
+                        targetDate.setDate(today.getDate() + 1);
+                      } else if (choice === 'weekend') {
+                        const dayOfWeek = today.getDay();
+                        const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
+                        targetDate.setDate(today.getDate() + daysUntilSaturday);
+                      } else if (choice === '2weeks') {
+                        targetDate.setDate(today.getDate() + 14);
+                      } else if (choice === 'nextmonth') {
+                        targetDate.setMonth(today.getMonth() + 1);
+                      }
+
+                      setStartDate(targetDate.toISOString().split('T')[0]);
+                      e.target.value = '';
+                    }}
+                    className="text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg px-2.5 py-1 border border-slate-200 dark:border-slate-700 cursor-pointer focus:outline-none"
+                  >
+                    <option value="">⚡ Quick Date Presets...</option>
+                    <option value="today">📅 Today</option>
+                    <option value="tomorrow">🌅 Tomorrow</option>
+                    <option value="weekend">🗓️ Next Weekend (Sat)</option>
+                    <option value="2weeks">✈️ In 2 Weeks</option>
+                    <option value="nextmonth">🏖️ Next Month</option>
+                  </select>
+                </div>
+
+                <div className="relative">
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    onClick={(e) => {
+                      try {
+                        e.currentTarget.showPicker?.();
+                      } catch {}
+                    }}
+                    disabled={isGenerating}
+                    className="h-11 rounded-xl cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
 

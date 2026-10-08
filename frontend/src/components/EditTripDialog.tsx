@@ -162,16 +162,45 @@ export const EditTripDialog: React.FC<EditTripDialogProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Start Date
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                  Start Date
+                </label>
+                <select
+                  onChange={(e) => {
+                    const choice = e.target.value;
+                    if (!choice) return;
+                    const today = new Date();
+                    let targetDate = new Date();
+                    if (choice === 'today') targetDate = today;
+                    else if (choice === 'tomorrow') targetDate.setDate(today.getDate() + 1);
+                    else if (choice === 'weekend') {
+                      const dayOfWeek = today.getDay();
+                      const daysUntilSat = (6 - dayOfWeek + 7) % 7 || 7;
+                      targetDate.setDate(today.getDate() + daysUntilSat);
+                    } else if (choice === 'nextmonth') targetDate.setMonth(today.getMonth() + 1);
+                    setStartDate(targetDate.toISOString().split('T')[0]);
+                    e.target.value = '';
+                  }}
+                  className="text-[10px] bg-slate-800 text-slate-300 rounded px-2 py-0.5 border border-slate-700 cursor-pointer"
+                >
+                  <option value="">⚡ Presets...</option>
+                  <option value="today">Today</option>
+                  <option value="tomorrow">Tomorrow</option>
+                  <option value="weekend">Next Weekend</option>
+                  <option value="nextmonth">Next Month</option>
+                </select>
+              </div>
               <div className="relative">
-                <Calendar className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+                <Calendar className="w-4 h-4 absolute left-3 top-3 text-slate-500 pointer-events-none" />
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-indigo-500"
+                  onClick={(e) => {
+                    try { e.currentTarget.showPicker?.(); } catch {}
+                  }}
+                  className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-indigo-500 cursor-pointer"
                 />
               </div>
             </div>
