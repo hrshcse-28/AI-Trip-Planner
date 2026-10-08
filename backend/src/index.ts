@@ -10,8 +10,15 @@ import destinationRoutes from './routes/destinations';
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedFrontend = process.env.FRONTEND_URL;
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || origin.includes('vercel.app') || origin.includes('localhost') || origin === allowedFrontend) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 app.use(express.json());
