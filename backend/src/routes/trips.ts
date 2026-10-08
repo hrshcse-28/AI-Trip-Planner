@@ -416,7 +416,7 @@ router.post('/:id/generate', async (req: AuthRequest, res: Response) => {
     }
 
     // Call AI service
-    const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+    const aiServiceUrl = process.env.AI_SERVICE_URL || 'https://aitrip-ai-service.onrender.com';
     const aiResponse = await fetch(`${aiServiceUrl}/generate-itinerary`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -693,7 +693,7 @@ router.post('/:id/chat', async (req: AuthRequest, res: Response) => {
       .map((d) => `Day ${d.dayNumber}: ` + d.activities.map((a) => a.title).join(', '))
       .join(' | ');
 
-    const aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+    const aiServiceUrl = process.env.AI_SERVICE_URL || 'https://aitrip-ai-service.onrender.com';
     const aiResponse = await fetch(`${aiServiceUrl}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
